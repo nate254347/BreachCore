@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
+    public static int totalEnemiesKilled = 0;  // Track total kills
+    
     public int health = 5;
     public float speed = 2f;
     public int goldMultiplier = 1;
@@ -61,6 +63,8 @@ public class Enemy : MonoBehaviour
         if (health <= 0)
         {
             isPendingDeath = true;
+            totalEnemiesKilled++;  // Increment kill counter
+            Debug.Log($"[Enemy] Killed! Total kills: {totalEnemiesKilled}");
             Destroy(gameObject);
         }
 

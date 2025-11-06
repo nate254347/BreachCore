@@ -5,10 +5,13 @@ public class TimerButton : MonoBehaviour
 {
     [Header("Settings")]
     [SerializeField] private float timerDuration = 5f;
+    [SerializeField] private int requiredKills = 10;
 
     [Header("References")]
     [SerializeField] private Button button;
     [SerializeField] private Image fillImage;
+    [SerializeField] private GameObject coverObject;         // The "locked" overlay
+    [SerializeField] private TMPro.TextMeshProUGUI unlockText;      // Text showing kills needed
 
     private float timer;
     private bool isRunning;
@@ -23,6 +26,32 @@ public class TimerButton : MonoBehaviour
 
     private void Update()
     {
+        bool hasEnoughKills = Enemy.totalEnemiesKilled >= requiredKills;
+
+        if (!hasEnoughKills)
+        {
+            if (button != null)
+                button.interactable = false;
+            if (fillImage != null)
+                fillImage.fillAmount = 0f;
+            
+            // Show cover and update text
+            if (coverObject != null)
+                coverObject.SetActive(true);
+            if (unlockText != null)
+                unlockText.text = $"Need {requiredKills - Enemy.totalEnemiesKilled} Kills";
+                
+            return;
+        }
+        else
+        {
+            // Hide cover when requirement is met
+            if (coverObject != null)
+                coverObject.SetActive(false);
+            if (unlockText != null)
+                unlockText.text = "";
+        }
+
         if (isRunning)
         {
             timer -= Time.deltaTime;
@@ -32,6 +61,10 @@ public class TimerButton : MonoBehaviour
 
             if (timer <= 0f)
                 EndTimer();
+        }
+        else if (button != null)
+        {
+            button.interactable = true;
         }
     }
 
