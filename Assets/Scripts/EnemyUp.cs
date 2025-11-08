@@ -37,7 +37,7 @@ public class ShopEnemyUpgradeButton : MonoBehaviour
                 masterPrefab.ApplyHealthUpgrade(2f); // double HP
                 break;
             case UpgradeType.Speed:
-                masterPrefab.ApplySpeedUpgrade(masterPrefab.speed + 0.02f); // +2.5% speed
+                    masterPrefab.ApplySpeedUpgrade(0.02f); // Increase speed by 10%
                 break;
         }
 

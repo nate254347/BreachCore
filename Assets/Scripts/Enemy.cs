@@ -8,7 +8,8 @@ public class Enemy : MonoBehaviour
     public float speed = 2f;
     public int goldMultiplier = 1;
 
-    public Tower tower;
+    // Enemies now target the base instead of towers
+    public global::BaseHealth baseTarget;
     public bool isPendingDeath;
 
     public void InitializeFromMaster(Enemy master)
@@ -23,27 +24,28 @@ public class Enemy : MonoBehaviour
         speed = master.speed;
         goldMultiplier = master.goldMultiplier;
 
-        tower = master.tower != null ? master.tower : FindObjectOfType<Tower>();
+    // prefer master-provided base target, otherwise find the singleton BaseHealth
+    baseTarget = FindObjectOfType<global::BaseHealth>() ?? global::BaseHealth.Instance;
 
         Debug.Log($"[Enemy] Initialized from master: HP={health}, Speed={speed}, Gold={goldMultiplier}");
     }
 
     private void Awake()
     {
-        if (tower == null) tower = FindObjectOfType<Tower>();
+    if (baseTarget == null) baseTarget = global::BaseHealth.Instance ?? FindObjectOfType<global::BaseHealth>();
         Debug.Log($"[Enemy] Awake: HP={health}, Speed={speed}, Gold={goldMultiplier}");
     }
 
     private void Update()
     {
-        if (isPendingDeath || tower == null) return;
+        if (isPendingDeath || baseTarget == null) return;
 
-        Vector3 dir = (tower.transform.position - transform.position).normalized;
+        Vector3 dir = (baseTarget.transform.position - transform.position).normalized;
         transform.position += dir * speed * Time.deltaTime;
 
-        if (Vector3.Distance(transform.position, tower.transform.position) < 0.5f)
+        if (Vector3.Distance(transform.position, baseTarget.transform.position) < 0.5f)
         {
-            tower.TakeDamage(health);
+            global::BaseHealth.Instance?.TakeDamage(health);
             Destroy(gameObject);
         }
     }

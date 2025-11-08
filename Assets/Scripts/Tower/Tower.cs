@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using TMPro;
 using UnityEngine;
 
 public class Tower : MonoBehaviour
@@ -22,10 +21,7 @@ public class Tower : MonoBehaviour
     public float maxRange = 10f;
     public TargetingMode targetingMode = TargetingMode.Closest;
 
-    [Header("Health")]
-    public int maxHealth = 100;
-    private int currentHealth;
-    public TextMeshProUGUI healthText;
+    // Tower-specific health removed — base health is handled by BaseHealth singleton
 
     [Header("Laser")]
     public GameObject laserPrefab;   // Assign prefab in inspector
@@ -36,8 +32,7 @@ public class Tower : MonoBehaviour
 
     void Start()
     {
-        currentHealth = maxHealth;
-        UpdateHealthDisplay();
+        // No per-tower health initialization; base health is global
     }
 
     void Update()
@@ -174,23 +169,5 @@ public class Tower : MonoBehaviour
     }
 
 
-    public void TakeDamage(int dmg)
-    {
-        currentHealth -= dmg;
-        if (currentHealth < 0) currentHealth = 0;
-        UpdateHealthDisplay();
-
-        if (currentHealth == 0)
-        {
-            Debug.Log("Tower destroyed!");
-        }
-    }
-
-    void UpdateHealthDisplay()
-    {
-        if (healthText != null)
-        {
-            healthText.text = currentHealth.ToString() + " <3";
-        }
-    }
+    // Towers no longer manage global health; keep tower destruction behavior separate if needed.
 }
